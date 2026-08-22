@@ -155,3 +155,54 @@ resource "aws_security_group" "rds" {
     Name = "deployguard-rds-sg"
   }
 }
+resource "aws_db_subnet_group" "main" {
+  name       = "deployguard-db-subnet-group"
+  subnet_ids = [aws_subnet.private_a.id, aws_subnet.private_b.id]
+
+  tags = {
+    Name = "deployguard-db-subnet-group"
+  }
+}
+
+resource "random_password" "db_password" {
+  length  = 20
+  special = false
+}
+
+resource "aws_ssm_parameter" "db_password" {
+  name        = "/deployguard/dev/db_password"
+  description = "Master password for the DeployGuard RDS instance"
+  type        = "SecureString"
+  value       = random_password.db_password.result
+
+  tags = {
+    Name = "deployguard-db-password"
+  }
+}
+
+resource "aws_db_instance" "main" {
+  identifier     = "deployguard-db"
+  engine         = "postgres"
+  engine_version = "16"
+  instance_class = "db.t4g.micro"
+
+  allocated_storage = 20
+  storage_type      = "gp3"
+
+  db_name  = "deployguard"
+  username = "deployguard_admin"
+  password = random_password.db_password.result
+
+  db_subnet_group_name   = aws_db_subnet_group.main.name
+  vpc_security_group_ids = [aws_security_group.rds.id]
+
+  publicly_accessible = false
+  multi_az            = false
+
+  skip_final_snapshot = true
+  deletion_protection = false
+
+  tags = {
+    Name = "deployguard-rds"
+  }
+}
