@@ -298,3 +298,65 @@ resource "aws_vpc_endpoint" "logs" {
     Name = "deployguard-logs-endpoint"
   }
 }
+resource "aws_iam_role" "ecs_execution" {
+  name = "deployguard-ecs-execution-role"
+
+  assume_role_policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Effect = "Allow"
+        Principal = {
+          Service = "ecs-tasks.amazonaws.com"
+        }
+        Action = "sts:AssumeRole"
+      }
+    ]
+  })
+
+  tags = {
+    Name = "deployguard-ecs-execution-role"
+  }
+}
+
+resource "aws_iam_role_policy_attachment" "ecs_execution_managed" {
+  role       = aws_iam_role.ecs_execution.name
+  policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonECSTaskExecutionRolePolicy"
+}
+
+resource "aws_iam_role_policy" "ecs_execution_ssm" {
+  name = "deployguard-ecs-execution-ssm-access"
+  role = aws_iam_role.ecs_execution.id
+
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Effect   = "Allow"
+        Action   = ["ssm:GetParameters"]
+        Resource = [aws_ssm_parameter.db_password.arn]
+      }
+    ]
+  })
+}
+
+resource "aws_iam_role" "ecs_task" {
+  name = "deployguard-ecs-task-role"
+
+  assume_role_policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Effect = "Allow"
+        Principal = {
+          Service = "ecs-tasks.amazonaws.com"
+        }
+        Action = "sts:AssumeRole"
+      }
+    ]
+  })
+
+  tags = {
+    Name = "deployguard-ecs-task-role"
+  }
+}
