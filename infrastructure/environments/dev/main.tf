@@ -385,12 +385,10 @@ resource "aws_iam_role" "github_actions" {
           Federated = aws_iam_openid_connect_provider.github.arn
         }
         Action = "sts:AssumeRoleWithWebIdentity"
-        Condition = {
+          Condition = {
           StringEquals = {
             "token.actions.githubusercontent.com:aud" = "sts.amazonaws.com"
-          }
-          StringLike = {
-            "token.actions.githubusercontent.com:sub" = "repo:OusmaneSanokho/deploguard:*"
+            "token.actions.githubusercontent.com:sub" = "repo:OusmaneSanokho@220847500/deploguard@1340600547:environment:production"
           }
         }
       }
