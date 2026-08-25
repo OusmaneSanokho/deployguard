@@ -17,6 +17,10 @@ resource "aws_subnet" "public_a" {
     Name = "deployguard-public-us-east-1a"
   }
 }
+variable "alert_email" {
+  description = "Email address to receive CloudWatch alarm notifications"
+  type        = string
+}
 
 resource "aws_subnet" "public_b" {
   vpc_id                  = aws_vpc.main.id
@@ -622,5 +626,66 @@ resource "aws_vpc_endpoint" "ssm" {
 
   tags = {
     Name = "deployguard-ssm-endpoint"
+  }
+}
+resource "aws_sns_topic" "alerts" {
+  name = "deployguard-alerts"
+
+  tags = {
+    Name = "deployguard-alerts"
+  }
+}
+
+resource "aws_sns_topic_subscription" "email" {
+  topic_arn = aws_sns_topic.alerts.arn
+  protocol  = "email"
+  endpoint  = var.alert_email
+}
+
+resource "aws_cloudwatch_metric_alarm" "unhealthy_targets" {
+  alarm_name          = "deployguard-unhealthy-targets"
+  comparison_operator = "GreaterThanThreshold"
+  evaluation_periods   = 2
+  metric_name          = "UnHealthyHostCount"
+  namespace            = "AWS/ApplicationELB"
+  period               = 60
+  statistic            = "Average"
+  threshold            = 0
+
+  dimensions = {
+    TargetGroup  = aws_lb_target_group.app.arn_suffix
+    LoadBalancer = aws_lb.main.arn_suffix
+  }
+
+  alarm_description = "Triggers when the ALB has at least one unhealthy target for 2 consecutive minutes"
+  alarm_actions      = [aws_sns_topic.alerts.arn]
+  ok_actions         = [aws_sns_topic.alerts.arn]
+
+  tags = {
+    Name = "deployguard-unhealthy-targets-alarm"
+  }
+}
+
+resource "aws_cloudwatch_metric_alarm" "high_5xx" {
+  alarm_name          = "deployguard-high-5xx-errors"
+  comparison_operator = "GreaterThanThreshold"
+  evaluation_periods   = 2
+  metric_name          = "HTTPCode_Target_5XX_Count"
+  namespace            = "AWS/ApplicationELB"
+  period               = 60
+  statistic            = "Sum"
+  threshold            = 5
+
+  dimensions = {
+    TargetGroup  = aws_lb_target_group.app.arn_suffix
+    LoadBalancer = aws_lb.main.arn_suffix
+  }
+
+  alarm_description = "Triggers when the app returns more than 5 server errors in a minute, sustained for 2 minutes"
+  alarm_actions      = [aws_sns_topic.alerts.arn]
+  ok_actions         = [aws_sns_topic.alerts.arn]
+
+  tags = {
+    Name = "deployguard-high-5xx-alarm"
   }
 }
