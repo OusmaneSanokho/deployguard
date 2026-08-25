@@ -401,6 +401,45 @@ resource "aws_iam_role" "github_actions" {
     Name = "deployguard-github-actions-role"
   }
 }
+resource "aws_iam_role_policy" "github_actions_deploy" {
+  name = "deployguard-github-actions-deploy"
+  role = aws_iam_role.github_actions.id
+
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Sid    = "ECRPush"
+        Effect = "Allow"
+        Action = [
+          "ecr:GetAuthorizationToken"
+        ]
+        Resource = "*"
+      },
+      {
+        Sid    = "ECRPushToRepo"
+        Effect = "Allow"
+        Action = [
+          "ecr:BatchCheckLayerAvailability",
+          "ecr:PutImage",
+          "ecr:InitiateLayerUpload",
+          "ecr:UploadLayerPart",
+          "ecr:CompleteLayerUpload"
+        ]
+        Resource = aws_ecr_repository.app.arn
+      },
+      {
+        Sid    = "ECSDeploy"
+        Effect = "Allow"
+        Action = [
+          "ecs:UpdateService",
+          "ecs:DescribeServices"
+        ]
+        Resource = aws_ecs_service.app.id
+      }
+    ]
+  })
+}
 output "db_endpoint" {
   description = "RDS connection endpoint (host:port)"
   value       = aws_db_instance.main.address
