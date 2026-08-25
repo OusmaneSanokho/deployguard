@@ -5,6 +5,23 @@ import psycopg2
 from fastapi import FastAPI, HTTPException
 
 app = FastAPI()
+@app.on_event("startup")
+def init_db():
+    try:
+        conn = get_db_connection()
+        cur = conn.cursor()
+        cur.execute("""
+            CREATE TABLE IF NOT EXISTS deployments (
+                id SERIAL PRIMARY KEY,
+                version TEXT NOT NULL,
+                deployed_at TIMESTAMP NOT NULL
+            )
+        """)
+        conn.commit()
+        cur.close()
+        conn.close()
+    except Exception as e:
+        print(f"Startup DB init skipped: {e}")
 
 APP_VERSION = "0.1.0"
 
