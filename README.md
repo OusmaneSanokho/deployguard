@@ -1,11 +1,11 @@
-# DeployGuard
+﻿# DeployGuard
 
-**A secure AWS deployment platform, provisioned entirely with Terraform � build, ship, and safely roll back a containerized application, with zero long-lived AWS credentials anywhere in the pipeline.**
+**A secure AWS deployment platform, provisioned entirely with Terraform --- build, ship, and safely roll back a containerized application, with zero long-lived AWS credentials anywhere in the pipeline.**
 
 ![PR Checks](https://github.com/OusmaneSanokho/deployguard/actions/workflows/pr-checks.yml/badge.svg)
 ![Deploy](https://github.com/OusmaneSanokho/deployguard/actions/workflows/deploy.yml/badge.svg)
 
-Built by Ousmane Sanokho � BSc (Hons) Information Technology, Cloud Engineering, Asia Pacific University.
+Built by Ousmane Sanokho --- BSc (Hons) Information Technology, Cloud Engineering, Asia Pacific University.
 
 ---
 
@@ -15,7 +15,7 @@ Most student projects prove you can build an application. DeployGuard proves som
 
 **Engineering narrative:** Provision -> Secure -> Deploy -> Validate -> Observe -> Detect Failure -> Rollback -> Reproduce
 
-Every piece of this repository is real, live infrastructure � not a diagram of what *could* be built. It was provisioned, broken on purpose, debugged, and fixed using the actual AWS console, CLI, and CloudWatch Logs, not simulated.
+Every piece of this repository is real, live infrastructure --- not a diagram of what *could* be built. It was provisioned, broken on purpose, debugged, and fixed using the actual AWS console, CLI, and CloudWatch Logs, not simulated.
 
 ---
 
@@ -63,7 +63,7 @@ flowchart TB
     SNS -->|email| Dev
 ```
 
-**No NAT Gateway.** Private subnets have zero route to the general internet � only narrow VPC Endpoints to the specific AWS APIs the app actually needs (ECR, CloudWatch Logs, SSM, S3). This was a deliberate least-privilege networking decision, not a cost shortcut.
+**No NAT Gateway.** Private subnets have zero route to the general internet --- only narrow VPC Endpoints to the specific AWS APIs the app actually needs (ECR, CloudWatch Logs, SSM, S3). This was a deliberate least-privilege networking decision, not a cost shortcut.
 
 ---
 
@@ -98,7 +98,7 @@ flowchart TB
 
 ## Real engineering problems solved
 
-These were genuine failures encountered and debugged during development � not staged examples.
+These were genuine failures encountered and debugged during development --- not staged examples.
 
 - **ECS tasks failed to start** with a timeout error retrieving secrets from SSM. Root cause: the VPC had endpoints for ECR/S3/Logs but not SSM - a real gap in the original networking build, invisible until secret injection was actually exercised. Fixed by adding the missing endpoint and forcing a new ECS deployment.
 - **ECR authentication failed** with a `400 Bad Request` on the standard, AWS-documented `docker login` command - confirmed via research to be a known tooling bug, not a local misconfiguration. Resolved by installing the official Amazon ECR Credential Helper, which authenticates through a different mechanism entirely.
@@ -159,5 +159,6 @@ cd ../environments/dev && terraform init && terraform apply      # full environm
 ---
 
 *Part of a three-project portfolio: **CloudRescue** (monitoring & automated recovery, EC2/Docker) -> **AI Internship Copilot** (full-stack AI SaaS, Next.js/Supabase) -> **DeployGuard** (the infrastructure and delivery system that gets an application into production).*
+
 
 
