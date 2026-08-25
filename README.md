@@ -2,8 +2,8 @@
 
 **A secure AWS deployment platform, provisioned entirely with Terraform — build, ship, and safely roll back a containerized application, with zero long-lived AWS credentials anywhere in the pipeline.**
 
-![PR Checks](https://github.com/OusmaneSanokho/deploguard/actions/workflows/pr-checks.yml/badge.svg)
-![Deploy](https://github.com/OusmaneSanokho/deploguard/actions/workflows/deploy.yml/badge.svg)
+![PR Checks](https://github.com/OusmaneSanokho/deployguard/actions/workflows/pr-checks.yml/badge.svg)
+![Deploy](https://github.com/OusmaneSanokho/deployguard/actions/workflows/deploy.yml/badge.svg)
 
 Built by Ousmane Sanokho — BSc (Hons) Information Technology, Cloud Engineering, Asia Pacific University.
 
