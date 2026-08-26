@@ -29,8 +29,7 @@ APP_VERSION = "0.1.0"
 
 @app.get("/health")
 def health():
-    raise HTTPException(status_code=500, detail="Intentional failure for rollback testing")
-
+    return {"status": "ok"}
 
 def get_db_connection():
     return psycopg2.connect(
