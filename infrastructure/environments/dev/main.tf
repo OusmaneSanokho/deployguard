@@ -392,7 +392,7 @@ resource "aws_iam_role" "github_actions" {
           Condition = {
           StringEquals = {
             "token.actions.githubusercontent.com:aud" = "sts.amazonaws.com"
-            "token.actions.githubusercontent.com:sub" = "repo:OusmaneSanokho@220847500/deploguard@1340600547:environment:production"
+            "token.actions.githubusercontent.com:sub" = "repo:OusmaneSanokho@220847500/deployguard@1340600547:environment:production"
           }
         }
       }
@@ -689,3 +689,4 @@ resource "aws_cloudwatch_metric_alarm" "high_5xx" {
     Name = "deployguard-high-5xx-alarm"
   }
 }
+
