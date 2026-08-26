@@ -26,10 +26,6 @@ def init_db():
 APP_VERSION = "0.1.0"
 
 
-@app.get("/health")
-def health():
-    return {"status": "ok"}
-
 
 @app.get("/health")
 def health():
