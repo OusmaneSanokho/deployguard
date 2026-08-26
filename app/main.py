@@ -31,9 +31,9 @@ def health():
     return {"status": "ok"}
 
 
-@app.get("/version")
-def version():
-    return {"version": APP_VERSION}
+@app.get("/health")
+def health():
+    raise HTTPException(status_code=500, detail="Intentional failure for rollback testing")
 
 
 def get_db_connection():
