@@ -1,4 +1,4 @@
-# DeployGuard
+﻿# DeployGuard
 
 **A secure AWS deployment platform, provisioned entirely with Terraform. It builds, ships, and automatically rolls back a containerized application, with zero long lived AWS credentials anywhere in the pipeline.**
 
@@ -33,8 +33,7 @@ Every part of this repository is real, live infrastructure. It was provisioned, 
 
 ## Architecture
 
-```
-mermaid
+```mermaid
 flowchart TB
     Internet((Internet))
     Dev[Developer]
@@ -215,4 +214,5 @@ Documented honestly, not hidden.
 ---
 
 *Part of a three project portfolio: **CloudRescue**, monitoring and automated recovery on EC2 and Docker, leads to **AI Internship Copilot**, a full stack AI SaaS on Next.js and Supabase, leads to **DeployGuard**, the infrastructure and delivery system that gets an application into production.*
+
 
